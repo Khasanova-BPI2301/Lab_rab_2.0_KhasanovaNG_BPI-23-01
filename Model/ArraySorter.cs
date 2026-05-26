@@ -124,6 +124,75 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             lock (_locker) { _totalComparisons += comparisons; }
             InsertionSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
         }
-    }
 
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> BubbleSortAsync(int[] originalArray)
+        {
+            return await Task.Run(() =>
+            {
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 0; i < array.Length - 1; i++)
+                {
+                    for (int j = 0; j < array.Length - 1 - i; j++)
+                    {
+                        comparisons++;
+                        if (array[j] > array[j + 1])
+                        {
+                            (array[j], array[j + 1]) = (array[j + 1], array[j]);
+                        }
+                    }
+                }
+
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            });
+        }
+
+        // Аналогично для QuickSortAsync и InsertionSortAsync...
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> QuickSortAsync(int[] originalArray)
+        {
+            return await Task.Run(() =>
+            {
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                QuickSortRecursive(array, 0, array.Length - 1, ref comparisons);
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            });
+        }
+
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> InsertionSortAsync(int[] originalArray)
+        {
+            return await Task.Run(() =>
+            {
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                for (int i = 1; i < array.Length; i++)
+                {
+                    int key = array[i];
+                    int j = i - 1;
+                    while (j >= 0 && array[j] > key)
+                    {
+                        comparisons++;
+                        array[j + 1] = array[j];
+                        j--;
+                    }
+                    comparisons++;
+                    array[j + 1] = key;
+                }
+
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            });
+        }
+
+    }
 }

@@ -9,7 +9,7 @@ using Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model;
 
 namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class MainViewModel_Thread : ObservableObject
     {
         private readonly ArraySorter _sorter;
         private readonly SynchronizationContext _uiContext;
@@ -37,7 +37,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
         [ObservableProperty]
         private bool _canGenerate = true;
 
-        public MainViewModel()
+        public MainViewModel_Thread()
         {
             _sorter = new ArraySorter();
             _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
@@ -54,8 +54,9 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
         {
             _originalArray = _sorter.GenerateRandomArray(ArraySize);
             // Отображаем первые 20 элементов 
-            OriginalArrayString = "Исходный массив: " + string.Join(", ", _originalArray, 0, Math.Min(20,
-_originalArray.Length)) + (ArraySize > 20 ? "..." : "");
+            OriginalArrayString = "Исходный массив: " +
+    string.Join(", ", _originalArray.Take(Math.Min(20, _originalArray.Length))) +
+    (_originalArray.Length > 20 ? "..." : "");
             // Сбрасываем предыдущие результаты 
             BubbleSortResult = QuickSortResult = InsertionSortResult = null;
             TotalComparisons = "Общее число сравнений: 0";
@@ -105,7 +106,7 @@ _originalArray.Length)) + (ArraySize > 20 ? "..." : "");
         {
             _uiContext.Post(_ =>
             {
-                BubbleSortResult = $"Пузырьковая: {FormatArray(sortedArray)}, время: {elapsedMs:F2} мс, сравнений: { comparisons}"; 
+                BubbleSortResult = $"Пузырьковая: {string.Join(", ", sortedArray.Take(5))}, время: {elapsedMs:F2} мс, сравнений: { comparisons}"; 
                 UpdateTotalComparisons();
                 BubbleSortCommand.NotifyCanExecuteChanged();
             }, null);
@@ -115,7 +116,7 @@ _originalArray.Length)) + (ArraySize > 20 ? "..." : "");
         {
             _uiContext.Post(_ =>
             {
-                QuickSortResult = $"Быстрая: {FormatArray(sortedArray)}, время: {elapsedMs:F2} мс, сравнений: { comparisons}"; 
+                QuickSortResult = $"Быстрая: {string.Join(", ", sortedArray.Take(5))}, время: {elapsedMs:F2} мс, сравнений: { comparisons}"; 
                 UpdateTotalComparisons();
                 QuickSortCommand.NotifyCanExecuteChanged();
             }, null);
@@ -125,7 +126,7 @@ _originalArray.Length)) + (ArraySize > 20 ? "..." : "");
         {
             _uiContext.Post(_ =>
             {
-                InsertionSortResult = $"Вставками: {FormatArray(sortedArray)}, время: {elapsedMs:F2} мс, сравнений: { comparisons} "; 
+                InsertionSortResult = $"Вставками: {string.Join(", ", sortedArray.Take(5))}, время: {elapsedMs:F2} мс, сравнений: { comparisons} "; 
                 UpdateTotalComparisons();
                 InsertionSortCommand.NotifyCanExecuteChanged();
             }, null);

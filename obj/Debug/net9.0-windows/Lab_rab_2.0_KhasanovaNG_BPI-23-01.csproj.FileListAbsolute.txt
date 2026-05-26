@@ -1,5 +1,4 @@
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.csproj.AssemblyReference.cache
-C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\MainWindow.g.cs
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\App.g.cs
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01_MarkupCompile.cache
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01_MarkupCompile.lref
@@ -9,7 +8,6 @@ C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\bin\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.dll
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\bin\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.pdb
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\bin\Debug\net9.0-windows\CommunityToolkit.Mvvm.dll
-C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\MainWindow.baml
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.g.resources
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.AssemblyInfoInputs.cache
@@ -22,3 +20,5 @@ C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.pdb
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\Lab_rab_2.0_KhasanovaNG_BPI-23-01.genruntimeconfig.cache
 C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\ref\Lab_rab_2.0_KhasanovaNG_BPI-23-01.dll
+C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\View\MainWindow.g.cs
+C:\Users\Нургиза\source\repos\Lab_rab_2.0_KhasanovaNG_BPI-23-01\Lab_rab_2.0_KhasanovaNG_BPI-23-01\obj\Debug\net9.0-windows\View\MainWindow.baml
