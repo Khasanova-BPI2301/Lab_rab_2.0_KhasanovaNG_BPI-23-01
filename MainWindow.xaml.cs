@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel;
 
 namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01
 {
@@ -19,6 +20,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }
