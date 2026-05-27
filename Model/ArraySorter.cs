@@ -19,7 +19,10 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
         public event SortCompletedHandler InsertionSortCompleted;
 
         public long TotalComparisons => _totalComparisons;
+        private volatile bool _cancelRequested = false;
 
+        public void RequestCancel() => _cancelRequested = true;
+        public void ClearCancel() => _cancelRequested = false;
         public int[] GenerateRandomArray(int size)
         {
             Random rand = new Random();
@@ -43,10 +46,16 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             long comparisons = 0;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            for (int i = 0; i < array.Length - 1; i++)
+            for (int i = 0; i < array.Length - 1 && !_cancelRequested; i++)
             {
-                for (int j = 0; j < array.Length - 1 - i; j++)
+                for (int j = 0; j < array.Length - 1 - i && !_cancelRequested; j++)
                 {
+                    if (_cancelRequested)
+                    {
+                        watch.Stop();
+                        BubbleSortCompleted?.Invoke(null, -1, -1); // сигнал отмены
+                        return;
+                    }
                     comparisons++;
                     if (array[j] > array[j + 1])
                     {
@@ -54,7 +63,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
                     }
                 }
             }
-
+           
             watch.Stop();
             lock (_locker) { _totalComparisons += comparisons; }
             BubbleSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
@@ -67,6 +76,14 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             long comparisons = 0;
             var watch = System.Diagnostics.Stopwatch.StartNew();
             QuickSortRecursive(array, 0, array.Length - 1, ref comparisons);
+
+            if (_cancelRequested)
+            {
+                watch.Stop();
+                QuickSortCompleted?.Invoke(null, -1, -1);
+                return;
+            }
+
             watch.Stop();
             lock (_locker) { _totalComparisons += comparisons; }
             QuickSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
@@ -74,6 +91,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
 
         private void QuickSortRecursive(int[] arr, int left, int right, ref long comparisons)
         {
+            if (_cancelRequested) return;
             if (left < right)
             {
                 int pivotIndex = Partition(arr, left, right, ref comparisons);
@@ -88,6 +106,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             int i = left - 1;
             for (int j = left; j < right; j++)
             {
+                if (_cancelRequested) return pivot;
                 comparisons++;
                 if (arr[j] < pivot)
                 {
@@ -106,11 +125,18 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             long comparisons = 0;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            for (int i = 1; i < array.Length; i++)
+            for (int i = 1; i < array.Length && !_cancelRequested; i++)
             {
+                if (_cancelRequested)
+                {
+                    watch.Stop();
+                    InsertionSortCompleted?.Invoke(null, -1, -1); // сигнал отмены
+                    return;
+                }
+
                 int key = array[i];
                 int j = i - 1;
-                while (j >= 0 && array[j] > key)
+                while (j >= 0 && array[j] > key && !_cancelRequested)
                 {
                     comparisons++;
                     array[j + 1] = array[j];
@@ -119,6 +145,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
                 comparisons++; // последнее сравнение
                 array[j + 1] = key;
             }
+
 
             watch.Stop();
             lock (_locker) { _totalComparisons += comparisons; }
@@ -151,7 +178,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             });
         }
 
-        // Аналогично для QuickSortAsync и InsertionSortAsync...
+        
         public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> QuickSortAsync(int[] originalArray)
         {
             return await Task.Run(() =>
@@ -193,6 +220,77 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
                 return (array, comparisons, watch.Elapsed.TotalMilliseconds);
             });
         }
+        // Событие завершения
+        public event SortCompletedHandler HeapSortCompleted;
 
+        // Публичный метод запуска
+        public void HeapSort(int[] originalArray)
+        {
+            int[] array = CopyArray(originalArray);
+            long comparisons = 0;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            // Построение кучи
+            for (int i = array.Length / 2 - 1; i >= 0 && !_cancelRequested; i--)
+            {
+
+                if (_cancelRequested)
+                {
+                    watch.Stop();
+                    HeapSortCompleted?.Invoke(null, -1, -1); // сигнал отмены
+                    return;
+                }
+
+                Heapify(array, array.Length, i, ref comparisons);
+            }
+                
+
+            // Извлечение элементов из кучи
+            for (int i = array.Length - 1; i > 0 && !_cancelRequested; i--)
+            {
+
+                if (_cancelRequested)
+                {
+                    watch.Stop();
+                    HeapSortCompleted?.Invoke(null, -1, -1); // сигнал отмены
+                    return;
+                }
+
+                (array[0], array[i]) = (array[i], array[0]); // swap
+                Heapify(array, i, 0, ref comparisons);
+            }
+
+            watch.Stop();
+            lock (_locker) { _totalComparisons += comparisons; }
+            HeapSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
+        }
+
+        // Вспомогательный метод
+        private void Heapify(int[] arr, int n, int i, ref long comparisons)
+        {
+            if (_cancelRequested) return;
+
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left] > arr[largest])
+            {
+                comparisons++;
+                largest = left;
+            }
+
+            if (right < n && arr[right] > arr[largest])
+            {
+                comparisons++;
+                largest = right;
+            }
+
+            if (largest != i)
+            {
+                (arr[i], arr[largest]) = (arr[largest], arr[i]);
+                Heapify(arr, n, largest, ref comparisons);
+            }
+        }
     }
 }

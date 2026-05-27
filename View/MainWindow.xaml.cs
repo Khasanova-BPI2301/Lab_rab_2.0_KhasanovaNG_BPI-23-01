@@ -23,9 +23,9 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.View
         public MainWindow()
         {
             InitializeComponent();
-           // DataContext = new MainViewModel_Thread();
+            DataContext = new MainViewModel_Thread();
 
-            DataContext = new MainViewModel_Task();
+            //DataContext = new MainViewModel_Task();
         }
     }
     

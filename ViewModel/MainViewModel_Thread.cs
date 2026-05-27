@@ -37,11 +37,14 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
         [ObservableProperty]
         private bool _canGenerate = true;
 
+        [ObservableProperty]
+        private string _heapSortResult = "";
+
         public MainViewModel_Thread()
         {
             _sorter = new ArraySorter();
             _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
-
+            _sorter.HeapSortCompleted += OnHeapSortCompleted;
             // Подписка на события завершения сортировки 
             _sorter.BubbleSortCompleted += OnBubbleSortCompleted;
             _sorter.QuickSortCompleted += OnQuickSortCompleted;
@@ -58,12 +61,14 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
     string.Join(", ", _originalArray.Take(Math.Min(20, _originalArray.Length))) +
     (_originalArray.Length > 20 ? "..." : "");
             // Сбрасываем предыдущие результаты 
-            BubbleSortResult = QuickSortResult = InsertionSortResult = null;
+            BubbleSortResult = QuickSortResult = InsertionSortResult = HeapSortResult = null;
             TotalComparisons = "Общее число сравнений: 0";
             // Обновляем состояние команд сортировок 
             BubbleSortCommand.NotifyCanExecuteChanged();
             QuickSortCommand.NotifyCanExecuteChanged();
             InsertionSortCommand.NotifyCanExecuteChanged();
+            HeapSortCommand.NotifyCanExecuteChanged();
+            CancelAllCommand.NotifyCanExecuteChanged();
         }
 
         private bool CanGenerateArray() => CanGenerate;
@@ -143,6 +148,41 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
                 return string.Join(", ", arr);
             else
                 return string.Join(", ", arr, 0, 5) + "...";
+        }
+        private void OnHeapSortCompleted(int[] sortedArray, long comparisons, double elapsedMs)
+        {
+            _uiContext.Post(_ =>
+            {
+                if (comparisons == -1)
+                    HeapSortResult = "Пирамидальная: отменено";
+                else
+                    HeapSortResult = $"Пирамидальная:  {string.Join(", ", sortedArray.Take(5))}, время: {elapsedMs:F2} мс, сравнений: {comparisons}";
+
+                UpdateTotalComparisons();
+                HeapSortCommand.NotifyCanExecuteChanged();
+            }, null);
+        }
+        private bool CanSortHeap() => _originalArray != null && HeapSortResult != "Сортируется...";
+
+        [RelayCommand(CanExecute = nameof(CanSortHeap))]
+        private void HeapSort()
+        {
+            _sorter.ClearCancel();
+            HeapSortResult = "Сортируется...";
+            HeapSortCommand.NotifyCanExecuteChanged();
+            Thread thread = new Thread(() => _sorter.HeapSort(_originalArray));
+            thread.IsBackground = true;
+            thread.Start();
+        }
+        [RelayCommand]
+        private void CancelAll()
+        {
+            _sorter.RequestCancel();
+            BubbleSortResult = QuickSortResult = InsertionSortResult = HeapSortResult = "Отменено";
+            BubbleSortCommand.NotifyCanExecuteChanged();
+            QuickSortCommand.NotifyCanExecuteChanged();
+            InsertionSortCommand.NotifyCanExecuteChanged();
+            HeapSortCommand.NotifyCanExecuteChanged();
         }
     }
 }

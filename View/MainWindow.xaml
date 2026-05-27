@@ -15,18 +15,20 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Размер массива и кнопка генерации -->
         <Label Grid.Row="0" Grid.Column="0" Content="Размер массива:" Margin="3"/>
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ArraySize, 
 UpdateSourceTrigger=PropertyChanged}" Margin="3"/>
-        <Button Grid.Row="0" Grid.Column="2" Content="Сгенерировать" Command="{Binding 
+        <Button Grid.Row="0" Grid.Column="3" Content="Сгенерировать" Command="{Binding 
 GenerateArrayCommand}" Margin="3"/>
 
         <!-- Отображение исходного массива -->
@@ -40,6 +42,10 @@ BubbleSortCommand}" Margin="3" Width="120"/>
 Margin="3" Width="120"/>
         <Button Grid.Row="2" Grid.Column="2" Content="Вставками" Command="{Binding 
 InsertionSortCommand}" Margin="3" Width="120"/>
+        <Button Grid.Row="2" Grid.Column="3" Content="Пирамидальная" Command="{Binding HeapSortCommand}" Margin="3" Width="100"/>
+        <Button Grid.Row="3" Grid.Column="4" Content="Отменить всё" Command="{Binding CancelAllCommand}" Margin="3" Width="100"/>
+
+
 
         <!-- Результаты сортировок -->
         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding BubbleSortResult}" 
@@ -48,9 +54,11 @@ Margin="3" TextWrapping="Wrap"/>
 Margin="3" TextWrapping="Wrap"/>
         <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding InsertionSortResult}" 
 Margin="3" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding HeapSortResult}" TextWrapping="Wrap" Margin="3"/>
+       
 
         <!-- Общее число сравнений -->
-        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TotalComparisons}" 
+        <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TotalComparisons}" 
 Margin="3" FontWeight="Bold"/>
     </Grid>
 </Window>
