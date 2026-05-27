@@ -50,8 +50,6 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
         [ObservableProperty]
         private double _heapProgress;
 
-        [ObservableProperty]
-        private string _comparisonResults;
 
         
 
@@ -81,8 +79,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
             _insertionProgressReporter = new Progress<double>(p => InsertionProgress = p);
             _heapProgressReporter = new Progress<double>(p => HeapProgress = p);
 
-            RunComparisonCommand = new AsyncRelayCommand(RunComparisonAsync);
-            ComparisonResults = "Результаты сравнения будут здесь";
+          
         }
 
         // Условия выполнения команд 
@@ -108,6 +105,12 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
     (_originalArray.Length > 20 ? "..." : "");
             // Сброс результатов 
             BubbleSortResult = QuickSortResult = InsertionSortResult = HeapSortResult = null;
+
+            BubbleProgress = 0;
+            QuickProgress = 0;
+            InsertionProgress = 0;
+            HeapProgress = 0;
+
             TotalComparisons = "Общее число сравнений: 0";
             // Обновляем состояние других команд 
             BubbleSortCommand.NotifyCanExecuteChanged();
@@ -130,10 +133,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
             {
                 BubbleSortResult = "Пузырьковая: отменено";
             }
-            finally
-            {
-                BubbleProgress = 0;
-            }
+           
         }
 
         private async Task QuickSortAsync()
@@ -150,10 +150,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
             {
                 QuickSortResult = "Быстрая: отменено";
             }
-            finally
-            {
-                QuickProgress = 0;
-            }
+            
         }
 
         private async Task InsertionSortAsync()
@@ -170,10 +167,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
             {
                 InsertionSortResult = "Вставками: отменено";
             }
-            finally
-            {
-                InsertionProgress = 0;
-            }
+           
         }
 
         private async Task HeapSortAsync()
@@ -190,10 +184,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
             {
                 HeapSortResult = "Пирамидальная: отменено";
             }
-            finally
-            {
-                HeapProgress = 0;
-            }
+           
         }
 
         private async Task CancelAllAsync()
@@ -239,58 +230,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
                 return string.Join(", ", arr.Take(5)) + "...";
         }
 
-        private async Task RunComparisonAsync()
-        {
-            ComparisonResults = "Запуск сравнения...\n\n";
-
-            // Проверяем, есть ли массив
-            if (_originalArray == null)
-            {
-                ComparisonResults = "Сначала сгенерируйте массив!";
-                return;
-            }
-
-            int size = _originalArray.Length;
-            ComparisonResults += $"=== Размер массива: {size} ===\n\n";
-
-            // Сбрасываем прогресс
-            BubbleProgress = QuickProgress = InsertionProgress = HeapProgress = 0;
-
-            // Запускаем последовательно НА ОДНОМ И ТОМ ЖЕ МАССИВЕ
-            ComparisonResults += "Пузырьковая: ";
-            await RunSingleSort("Пузырьковая", () =>
-                _sorter.BubbleSortAsync(_originalArray, _cts.Token, _bubbleProgressReporter));
-
-            ComparisonResults += "Быстрая: ";
-            await RunSingleSort("Быстрая", () =>
-                _sorter.QuickSortAsync(_originalArray, _cts.Token, _quickProgressReporter));
-
-            ComparisonResults += "Вставками: ";
-            await RunSingleSort("Вставками", () =>
-                _sorter.InsertionSortAsync(_originalArray, _cts.Token, _insertionProgressReporter));
-
-            ComparisonResults += "Пирамидальная: ";
-            await RunSingleSort("Пирамидальная", () =>
-                _sorter.HeapSortAsync(_originalArray, _cts.Token, _heapProgressReporter));
-
-            ComparisonResults += $"\nОбщее число сравнений: {_sorter.TotalComparisons}\n";
-        }
-
-        private async Task<double> RunSingleSort(string name, Func<Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)>> sortFunc)
-        {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            try
-            {
-                var result = await sortFunc();
-                sw.Stop();
-                ComparisonResults += $"{name}: {result.ElapsedMilliseconds:F2} мс, сравнений: {result.Comparisons}\n";
-                return result.ElapsedMilliseconds;
-            }
-            catch (OperationCanceledException)
-            {
-                ComparisonResults += $"{name}: отменено\n";
-                return -1;
-            }
-        }
+        
+       
     } 
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab_rab_2._0_KhasanovaNG_BPI_23_01.View"
         mc:Ignorable="d"
-        Title="Сравнение сортировок (многопоточность)" Height="535" Width="800">
+        Title="Сравнение сортировок (многопоточность)" Height="370" Width="800">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -48,7 +48,7 @@ Margin="3" Width="120"/>
         <Button Grid.Row="2" Grid.Column="2" Content="Вставками" Command="{Binding 
 InsertionSortCommand}" Margin="3" Width="120"/>
         <Button Grid.Row="2" Grid.Column="3" Content="Пирамидальная" Command="{Binding HeapSortCommand}" Margin="3" Width="100"/>
-        <Button Grid.Row="3" Grid.Column="4" Content="Отменить всё" Command="{Binding CancelAllCommand}" Margin="3" Width="100"/>
+        <Button Grid.Row="11" Grid.Column="4" Content="Отменить всё" Command="{Binding CancelAllCommand}" Margin="3" />
 
 
 
@@ -69,12 +69,6 @@ InsertionSortCommand}" Margin="3" Width="120"/>
         <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TotalComparisons}" 
 Margin="3" FontWeight="Bold"/>
 
-        <!-- Кнопка сравнения -->
-        <Button Grid.Row="0" Grid.Column="2" Content="Сравнить" Command="{Binding RunComparisonCommand}" Margin="3" Width="100"/>
-
-        <!-- Результаты сравнения -->
-        <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding ComparisonResults}" 
-           Margin="3" TextWrapping="Wrap" Height="200" VerticalAlignment="Top" 
-           Background="#F0F0F0" Padding="5"/>
+       
     </Grid>
 </Window>
