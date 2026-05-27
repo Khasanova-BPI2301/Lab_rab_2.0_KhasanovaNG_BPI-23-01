@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,7 +64,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
                     }
                 }
             }
-           
+
             watch.Stop();
             lock (_locker) { _totalComparisons += comparisons; }
             BubbleSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
@@ -152,74 +153,6 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             InsertionSortCompleted?.Invoke(array, comparisons, watch.Elapsed.TotalMilliseconds);
         }
 
-        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> BubbleSortAsync(int[] originalArray)
-        {
-            return await Task.Run(() =>
-            {
-                int[] array = CopyArray(originalArray);
-                long comparisons = 0;
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                for (int i = 0; i < array.Length - 1; i++)
-                {
-                    for (int j = 0; j < array.Length - 1 - i; j++)
-                    {
-                        comparisons++;
-                        if (array[j] > array[j + 1])
-                        {
-                            (array[j], array[j + 1]) = (array[j + 1], array[j]);
-                        }
-                    }
-                }
-
-                watch.Stop();
-                lock (_locker) { _totalComparisons += comparisons; }
-                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
-            });
-        }
-
-        
-        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> QuickSortAsync(int[] originalArray)
-        {
-            return await Task.Run(() =>
-            {
-                int[] array = CopyArray(originalArray);
-                long comparisons = 0;
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                QuickSortRecursive(array, 0, array.Length - 1, ref comparisons);
-                watch.Stop();
-                lock (_locker) { _totalComparisons += comparisons; }
-                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
-            });
-        }
-
-        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> InsertionSortAsync(int[] originalArray)
-        {
-            return await Task.Run(() =>
-            {
-                int[] array = CopyArray(originalArray);
-                long comparisons = 0;
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                for (int i = 1; i < array.Length; i++)
-                {
-                    int key = array[i];
-                    int j = i - 1;
-                    while (j >= 0 && array[j] > key)
-                    {
-                        comparisons++;
-                        array[j + 1] = array[j];
-                        j--;
-                    }
-                    comparisons++;
-                    array[j + 1] = key;
-                }
-
-                watch.Stop();
-                lock (_locker) { _totalComparisons += comparisons; }
-                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
-            });
-        }
         // Событие завершения
         public event SortCompletedHandler HeapSortCompleted;
 
@@ -234,6 +167,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
             for (int i = array.Length / 2 - 1; i >= 0 && !_cancelRequested; i--)
             {
 
+
                 if (_cancelRequested)
                 {
                     watch.Stop();
@@ -243,7 +177,7 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
 
                 Heapify(array, array.Length, i, ref comparisons);
             }
-                
+
 
             // Извлечение элементов из кучи
             for (int i = array.Length - 1; i > 0 && !_cancelRequested; i--)
@@ -268,7 +202,6 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
         // Вспомогательный метод
         private void Heapify(int[] arr, int n, int i, ref long comparisons)
         {
-            if (_cancelRequested) return;
 
             int largest = i;
             int left = 2 * i + 1;
@@ -288,9 +221,220 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.Model
 
             if (largest != i)
             {
+
                 (arr[i], arr[largest]) = (arr[largest], arr[i]);
                 Heapify(arr, n, largest, ref comparisons);
             }
         }
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> BubbleSortAsync(
+    int[] originalArray,
+    CancellationToken token = default,
+    IProgress<double> progress = null)
+        {
+            return await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                int n = array.Length;
+
+                for (int i = 0; i < n - 1; i++)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    for (int j = 0; j < n - 1 - i; j++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        comparisons++;
+
+                        if (array[j] > array[j + 1])
+                        {
+                            (array[j], array[j + 1]) = (array[j + 1], array[j]);
+                        }
+                    }
+
+                    // Обновляем прогресс после каждой итерации внешнего цикла
+                    double percent = ((double)(i + 1) / (n - 1)) * 100;
+                    progress?.Report(percent);
+                }
+
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                progress?.Report(100);
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            });
+        }
+
+
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> QuickSortAsync(
+    int[] originalArray,
+    CancellationToken token = default,
+    IProgress<double> progress = null)
+        {
+            return await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                QuickSortRecursiveWithCancellation(array, 0, array.Length - 1, ref comparisons, token, progress, array.Length);
+
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                progress?.Report(100);
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            }, token);
+        }
+
+        private void QuickSortRecursiveWithCancellation(
+    int[] arr, int left, int right, ref long comparisons,
+    CancellationToken token, IProgress<double> progress, int totalSize)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (left < right)
+            {
+                int pivotIndex = PartitionWithCancellation(arr, left, right, ref comparisons, token);
+                QuickSortRecursiveWithCancellation(arr, left, pivotIndex - 1, ref comparisons, token, progress, totalSize);
+                QuickSortRecursiveWithCancellation(arr, pivotIndex + 1, right, ref comparisons, token, progress, totalSize);
+
+                // Приблизительный прогресс
+                double percent = ((double)(right - left) / totalSize) * 50;
+                progress?.Report(percent);
+            }
+        }
+        private int PartitionWithCancellation(int[] arr, int left, int right, ref long comparisons, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+
+            int pivot = arr[right];
+            int i = left - 1;
+            for (int j = left; j < right; j++)
+            {
+                token.ThrowIfCancellationRequested();
+                comparisons++;
+
+                if (arr[j] < pivot)
+                {
+                    i++;
+                    (arr[i], arr[j]) = (arr[j], arr[i]);
+                }
+            }
+            (arr[i + 1], arr[right]) = (arr[right], arr[i + 1]);
+            return i + 1;
+        }
+
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> InsertionSortAsync(
+    int[] originalArray,
+    CancellationToken token = default,
+    IProgress<double> progress = null)
+        {
+            return await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                int n = array.Length;
+
+                for (int i = 1; i < n; i++)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    int key = array[i];
+                    int j = i - 1;
+                    while (j >= 0 && array[j] > key)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        comparisons++;
+                        array[j + 1] = array[j];
+                        j--;
+                    }
+                    comparisons++;
+                    array[j + 1] = key;
+
+                    double percent = ((double)i / (n - 1)) * 100;
+                    progress?.Report(percent);
+                }
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                progress?.Report(100);
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            }, token);
+        }
+       
+        
+        //Асинхронная пирамидальная сортировка
+        public async Task<(int[] SortedArray, long Comparisons, double ElapsedMilliseconds)> HeapSortAsync(
+     int[] originalArray,
+     CancellationToken token = default,
+     IProgress<double> progress = null)
+        {
+            return await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+
+                int[] array = CopyArray(originalArray);
+                long comparisons = 0;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                int n = array.Length;
+
+                for (int i = n / 2 - 1; i >= 0; i--)
+                {
+                    token.ThrowIfCancellationRequested();
+                    HeapifyWithCancellation(array, n, i, ref comparisons, token);
+                }
+
+                for (int i = n - 1; i > 0; i--)
+                {
+                    token.ThrowIfCancellationRequested();
+                    (array[0], array[i]) = (array[i], array[0]);
+                    HeapifyWithCancellation(array, i, 0, ref comparisons, token);
+
+                    // Обновляем прогресс
+                    double percent = ((double)(n - i) / n) * 100;
+                    progress?.Report(percent);
+                }
+
+                watch.Stop();
+                watch.Stop();
+                lock (_locker) { _totalComparisons += comparisons; }
+                progress?.Report(100);
+                return (array, comparisons, watch.Elapsed.TotalMilliseconds);
+            }, token);
+        }
+        private void HeapifyWithCancellation(int[] arr, int n, int i, ref long comparisons, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+
+            if (left < n && arr[left] > arr[largest])
+            {
+                comparisons++;
+                largest = left;
+            }
+
+            if (right < n && arr[right] > arr[largest])
+            {
+                comparisons++;
+                largest = right;
+            }
+
+            if (largest != i)
+            {
+                token.ThrowIfCancellationRequested();
+                (arr[i], arr[largest]) = (arr[largest], arr[i]);
+                HeapifyWithCancellation(arr, n, largest, ref comparisons, token);
+            }
+        }
+
     }
 }

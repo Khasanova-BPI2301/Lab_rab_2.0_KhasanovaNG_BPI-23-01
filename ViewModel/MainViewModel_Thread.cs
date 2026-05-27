@@ -44,11 +44,12 @@ namespace Lab_rab_2._0_KhasanovaNG_BPI_23_01.ViewModel
         {
             _sorter = new ArraySorter();
             _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
-            _sorter.HeapSortCompleted += OnHeapSortCompleted;
+           
             // Подписка на события завершения сортировки 
             _sorter.BubbleSortCompleted += OnBubbleSortCompleted;
             _sorter.QuickSortCompleted += OnQuickSortCompleted;
             _sorter.InsertionSortCompleted += OnInsertionSortCompleted;
+            _sorter.HeapSortCompleted += OnHeapSortCompleted;
         }
 
         // Команда генерации массива 

@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab_rab_2._0_KhasanovaNG_BPI_23_01.View"
         mc:Ignorable="d"
-        Title="Сравнение сортировок (многопоточность)" Height="450" Width="800">
+        Title="Сравнение сортировок (многопоточность)" Height="535" Width="800">
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -48,17 +53,28 @@ InsertionSortCommand}" Margin="3" Width="120"/>
 
 
         <!-- Результаты сортировок -->
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding BubbleSortResult}" 
-Margin="3" TextWrapping="Wrap"/>
-        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding QuickSortResult}" 
-Margin="3" TextWrapping="Wrap"/>
-        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding InsertionSortResult}" 
-Margin="3" TextWrapping="Wrap"/>
-        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding HeapSortResult}" TextWrapping="Wrap" Margin="3"/>
-       
+        <ProgressBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Height="20" Value="{Binding BubbleProgress}" Minimum="0" Maximum="100" Margin="3"/>
+        <ProgressBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Height="20" Value="{Binding QuickProgress}" Minimum="0" Maximum="100" Margin="3"/>
+        <ProgressBar Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Height="20" Value="{Binding InsertionProgress}" Minimum="0" Maximum="100" Margin="3"/>
+        <ProgressBar Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3" Height="20" Value="{Binding HeapProgress}" Minimum="0" Maximum="100" Margin="3"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding BubbleSortResult}" Margin="3" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding QuickSortResult}" Margin="3" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding InsertionSortResult}" Margin="3" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding HeapSortResult}" Margin="3" TextWrapping="Wrap"/>
+        
+
 
         <!-- Общее число сравнений -->
-        <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TotalComparisons}" 
+        <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding TotalComparisons}" 
 Margin="3" FontWeight="Bold"/>
+
+        <!-- Кнопка сравнения -->
+        <Button Grid.Row="0" Grid.Column="2" Content="Сравнить" Command="{Binding RunComparisonCommand}" Margin="3" Width="100"/>
+
+        <!-- Результаты сравнения -->
+        <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding ComparisonResults}" 
+           Margin="3" TextWrapping="Wrap" Height="200" VerticalAlignment="Top" 
+           Background="#F0F0F0" Padding="5"/>
     </Grid>
 </Window>
